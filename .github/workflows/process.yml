@@ -1,0 +1,28 @@
+name: 2GB Renamer Backend
+
+on:
+  repository_dispatch:
+    types: [process_file]
+
+jobs:
+  process-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        # TgCrypto makes 2GB downloads 10x faster
+        run: pip install pyrogram tgcrypto
+
+      - name: Run Pyrogram Bot Engine
+        env:
+          PAYLOAD: ${{ toJson(github.event.client_payload) }}
+          API_ID: ${{ secrets.API_ID }}
+          API_HASH: ${{ secrets.API_HASH }}
+        run: python src/worker.py
