@@ -51,12 +51,12 @@ async def main():
                 thumb_path = await app.download_media(thumb_message, file_name="thumb.jpg")
 
             # --- UPLOAD PROCESSED FILE ---
+           # --- UPLOAD PROCESSED FILE ---
             await app.edit_message_text(chat_id, status_msg.id, "📤 **Uploading renamed file...**")
             
-            # Auto-detect if we should send as Video or Document
-            is_video = new_name.lower().endswith(('.mp4', '.mkv', '.avi'))
+            upload_type = payload.get("upload_type", "type_video")
             
-            if is_video:
+            if upload_type == "type_video":
                 await app.send_video(
                     chat_id=chat_id,
                     video=file_path,
